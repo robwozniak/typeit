@@ -1,0 +1,29 @@
+{
+  "name": "typeit",
+  "version": "0.0.1",
+  "description": "Simple JavaScript Typing Animation Plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Robert Wozniak",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^9.0.2",
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.1",
+    "gulp-eslint": "^5.0.0",
+    "gulp-if": "^2.0.2",
+    "gulp-logger": "0.0.2",
+    "gulp-notify": "^3.2.0",
+    "gulp-plumber": "^1.2.0",
+    "gulp-postcss": "^7.0.1",
+    "gulp-sass": "^4.0.1",
+    "gulp-sass-error": "^1.0.5",
+    "gulp-util": "^3.0.8"
+  }
+}
