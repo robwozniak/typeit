@@ -1,0 +1,11 @@
+version: '2'
+services:
+  node:
+    image: node:carbon-alpine
+    user: node
+    working_dir: /var/www/html
+    volumes:
+     - ./.docker/init.sh:/usr/local/bin/init.sh
+     - ./:/var/www/html
+    command:
+     - /usr/local/bin/init.sh
