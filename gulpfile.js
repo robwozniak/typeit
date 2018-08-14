@@ -36,12 +36,12 @@ gulp.task('es6', function () {
       'node_modules/babel-polyfill/dist/polyfill.js',
       paths.js
     ])
+    .pipe(eslint())
+    .pipe(eslint.format())
     .pipe(plumber())
     .pipe(babel({
       presets: ['env']
     }))
-    .pipe(eslint())
-    .pipe(eslint.format())
     .pipe(gulp.dest('./dist/js'));
 });
 
