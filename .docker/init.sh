@@ -2,9 +2,9 @@
 
 if [ -f "./package.json" ]; then
     echo "========================================="
-    echo "Run npm install"
+    echo "Run yarn install"
     echo "========================================="
-    npm install
+    yarn install
 fi
 
 if [ -d "./node_modules/gulp/bin" ]; then
