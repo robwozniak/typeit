@@ -14,7 +14,6 @@ class Typeit {
     this.letterClass = config.letterClass || false
     this.backwards   = config.backwards || false
     this.leaveLast   = config.leaveLast || false
-    this.removeLast  = config.removeLast || false
     this.isInfinity  = config.infinity && !config.leaveLast || false
     this.onType      = config.onType || false
     this.onClear     = config.onClear || false
