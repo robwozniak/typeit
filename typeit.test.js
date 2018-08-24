@@ -14,7 +14,7 @@ describe('[ Functions ]', () => {
     })
   })
 
-  test('[prepareLetter] Without specyfic configuration - simple text', () => {
+  test('[prepareLetter] Without specific configuration - simple text', () => {
     expect(component.prepareLetter('A')).toEqual('A')
   })
 
