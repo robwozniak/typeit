@@ -4,7 +4,8 @@ const DEFAULT_TYPEIT_CLASS = 'typeit'
 
 class Typeit {
   constructor(selector, config) {
-    this.element     = document.querySelector(selector)
+    if (!config)     return
+    this.element     = selector instanceof Element ? selector : document.querySelector(selector)
     this.initWord    = this.element.textContent
     this.words       = this.initWord ? [this.initWord].concat(config.words): config.words
     this.speed       = config.speed || DEFAULT_SPEED
@@ -104,7 +105,7 @@ class Typeit {
   }
 
   wait(time) {
-    return new Promise(resolve => setTimeout(() => resolve(time), this.delay))
+    return new Promise(resolve => setTimeout(() => resolve(time), time))
   }
 
   clear(word) {
@@ -123,10 +124,17 @@ class Typeit {
         else {
           this.element.textContent = ''
           clearInterval(typeLoop)
-          resolve(word)
+          resolve(this.element.textContent)
           return
         }
       }, this.speed)
     })
   }
+}
+
+try {
+  module.exports = Typeit
+}
+catch (error) {
+  console.warn(error)
 }
