@@ -5,14 +5,27 @@ var sass         = require('gulp-sass');
 var babel        = require('gulp-babel');
 var plumber      = require('gulp-plumber');
 var eslint       = require('gulp-eslint');
+var uglify       = require('gulp-uglify');
+var rename       = require('gulp-rename');
 
 // Asset paths
 var paths = {
   sass: './sass/**/*.scss',
-  js: './js/**/*.js'
+  js: './js/**/*.js',
+  distJs: './dist/**/*.js'
 };
 
 gulp.task('default', ['sass', 'es6', 'watch']);
+
+/**
+ * Minify JavaScript
+ */
+gulp.task('compress', function () {
+  return gulp.src(paths.distJs)
+    .pipe(uglify())
+    .pipe(rename('typeit.min.js'))
+    .pipe(gulp.dest('./dist/js'))
+});
 
 /**
  * Compile Sass

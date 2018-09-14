@@ -4,7 +4,8 @@ const DEFAULT_TYPEIT_CLASS = 'typeit'
 
 class Typeit {
   constructor(selector, config) {
-    if (!config)     return
+    if (!config || !config.words) return
+
     this.element     = selector instanceof Element ? selector : document.querySelector(selector)
     this.initWord    = this.element.textContent
     this.words       = this.initWord ? [this.initWord].concat(config.words): config.words
