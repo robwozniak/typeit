@@ -130,6 +130,14 @@ class Typeit {
       }, this.speed)
     })
   }
+
+  sortWords() {
+    return this.words.sort((a, b) => {
+      b = b.toLowerCase()
+      a = a.toLowerCase()
+      return a === b ? 0 : a < b ? -1 : 1
+    })
+  }
 }
 
 try {

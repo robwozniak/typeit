@@ -9,7 +9,11 @@ describe('[ Functions ]', () => {
   beforeEach(function () {
     component = new typeit(element, {
       words: [
-        'Sample text'
+        'Sample text',
+        'alpha',
+        'Charlie',
+        'yankee',
+        'whiskey'
       ]
     })
   })
@@ -27,6 +31,16 @@ describe('[ Functions ]', () => {
     component.letterTag   = 'span',
     component.letterClass = 'test'
     expect(component.prepareLetter('A')).toEqual(`<span class="test">A</span>`)
+  })
+
+  test('[sortWords] Sort with alphabetical order', () => {
+    expect(component.sortWords()).toEqual([
+      'alpha',
+      'Charlie',
+      'Sample text',
+      'whiskey',
+      'yankee'
+    ])
   })
 })
 
