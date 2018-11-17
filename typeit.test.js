@@ -9,7 +9,11 @@ describe('[ Functions ]', () => {
   beforeEach(function () {
     component = new typeit(element, {
       words: [
-        'Sample text'
+        'Sample text',
+        'alpha',
+        'Charlie',
+        'yankee',
+        'whiskey'
       ]
     })
   })
@@ -27,6 +31,16 @@ describe('[ Functions ]', () => {
     component.letterTag   = 'span',
     component.letterClass = 'test'
     expect(component.prepareLetter('A')).toEqual(`<span class="test">A</span>`)
+  })
+
+  test('[sortWords] Sort with alphabetical order', () => {
+    expect(component.sortWords()).toEqual([
+      'alpha',
+      'Charlie',
+      'Sample text',
+      'whiskey',
+      'yankee'
+    ])
   })
 })
 
@@ -55,13 +69,13 @@ describe('[ Promises ]', () => {
   })
 
   it('[Clear] Word - both leaveLast and isLastWord are true', () => {
-    component.leaveLast = true
+    component.leaveLast  = true
     component.isLastWord = true
     return component.clear('Sample').then(data => expect(data).toEqual('Sample'))
   })
 
   it('[Clear] Word - both leaveLast and isLastWord are false', () => {
-    component.leaveLast = false
+    component.leaveLast  = false
     component.isLastWord = false
     return component.clear('Sample').then(data => expect(data).toEqual(''))
   })

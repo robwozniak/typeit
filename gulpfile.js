@@ -53,7 +53,7 @@ gulp.task('es6', function () {
     .pipe(eslint.format())
     .pipe(plumber())
     .pipe(babel({
-      presets: ['env']
+      presets: ['babel-preset-env']
     }))
     .pipe(gulp.dest('./dist/js'));
 });
