@@ -1,27 +1,31 @@
-const DEFAULT_SPEED        = 95
 const DEFAULT_DELAY        = 650
+const DEFAULT_SPEED        = 95
 const DEFAULT_TYPEIT_CLASS = 'typeit'
 
 class Typeit {
   constructor(selector, config) {
     if (!config || !config.words) return
 
-    this.element     = selector instanceof Element ? selector : document.querySelector(selector)
-    this.initWord    = this.element.textContent
-    this.words       = this.initWord ? [this.initWord].concat(config.words): config.words
-    this.speed       = config.speed || DEFAULT_SPEED
-    this.delay       = config.delay || DEFAULT_DELAY
-    this.letterTag   = config.letterTag || false
-    this.letterClass = config.letterClass || false
     this.backwards   = config.backwards || false
+    this.delay       = config.delay || DEFAULT_DELAY
+    this.element     = selector instanceof Element ? selector : document.querySelector(selector)
+    this.events      = { onType: false, onClear: false, onComplete: false }
+    this.frugal      = config.frugal || false
+    this.initWord    = this.element.textContent
     this.leaveLast   = config.leaveLast || false
     this.isInfinity  = config.infinity && !config.leaveLast || false
-    this.onType      = config.onType || false
+    this.letterClass = config.letterClass || false
+    this.letterTag   = config.letterTag || false
     this.onClear     = config.onClear || false
     this.onComplete  = config.onComplete || false
-    this.events      = { onType: false, onClear: false, onComplete: false }
+    this.onType      = config.onType || false
+    this.sort        = config.sort || false
+    this.speed       = config.speed || DEFAULT_SPEED
+    this.words       = (this.initWord ? [this.initWord].concat(config.words) : config.words)
+      .map(elem => Array.isArray(elem) ? elem.join(' ') : elem)
 
     this.element.classList.add(DEFAULT_TYPEIT_CLASS)
+    if (this.sort) this.words = this.sortWords()
 
     this.initBaseEvents()
     this.initTypeLoop()
@@ -33,34 +37,38 @@ class Typeit {
 
   initBaseEvents() {
     for (let eventName in this.events) {
-      if (this.events.hasOwnProperty(eventName)) {
-        this.events[eventName] = new Event(eventName)
-        this.element.addEventListener(eventName, (event) => {
-          if (this[eventName] instanceof Function) {
-            this[eventName].call(event, event, event.detail)
-          }
-        })
-      }
+      this.events[eventName] = new Event(eventName)
+      this.element.addEventListener(eventName, (event) => {
+        if (this[eventName] instanceof Function) {
+          this[eventName].call(event, event, event.detail)
+        }
+      })
     }
   }
 
   updateBaseEventsDetailData(word) {
     for (let eventName in this.events) {
-      if (this.events.hasOwnProperty(eventName)) {
-        this.events[eventName]['detail'] = word
-      }
+      this.events[eventName]['detail'] = word
     }
   }
 
   initTypeLoop() {
-    for (let idx = 0, typePromise = Promise.resolve(); idx < this.words.length; idx++) {
+    for (
+      let idx         = 0,
+          typePromise = Promise.resolve(),
+          currentWord = '';
+      idx < this.words.length;
+      idx++
+    ) {
+      // create shallow copy of current word
+      currentWord = this.words[idx].slice()
       typePromise = typePromise.then(() => {
         this.isLastWord = this.words.length - 1 === idx
-        this.updateBaseEventsDetailData(this.words[idx])
+        this.updateBaseEventsDetailData(currentWord)
 
-        return this.type(this.words[idx])
+        return this.type(currentWord)
           .then(() => this.wait(this.delay))
-          .then(() => this.clear(this.words[idx]))
+          .then(() => this.clear(currentWord))
       }).then(() => {
         if (this.isInfinity && this.isLastWord) {
           this.initTypeLoop()
@@ -73,12 +81,22 @@ class Typeit {
   }
 
   prepareLetter(letter) {
-    return this.letterTag ? `<${this.letterTag} class="${this.letterClass || ''}">${letter}</${this.letterTag}>` : letter
+    return this.letterTag ?
+      `<${this.letterTag} class="${this.letterClass || ''}">${letter}</${this.letterTag}>`
+      :
+      letter
   }
 
   type(word) {
     return new Promise(resolve => {
-      if (this.element.textContent) {
+      if (
+        this.frugal &&
+        this.element.textContent &&
+        this.isFrugalAvailable(word)
+      ) {
+        word = word.replace(this.element.textContent, '')
+      }
+      else if (this.element.textContent) {
         resolve(word)
         return
       }
@@ -115,15 +133,27 @@ class Typeit {
         return
       }
 
+      let currentWordIndex = this.words.indexOf(word)
+
       this.element.dispatchEvent(this.events.onClear)
 
-      const typeLoop = setInterval(() => {
+      const clearLoop = setInterval(() => {
         if (this.backwards && this.element.textContent) {
           this.element.removeChild(this.element.lastChild)
+          if (
+            this.frugal &&
+            this.isFrugalAvailable(
+              this.isLastWord &&
+              this.isInfinity ? this.words[0] : this.words[currentWordIndex + 1]
+            )
+          ) {
+            resolve(word)
+            clearInterval(clearLoop)
+          }
         }
         else {
           this.element.textContent = ''
-          clearInterval(typeLoop)
+          clearInterval(clearLoop)
           resolve(this.element.textContent)
           return
         }
@@ -131,10 +161,14 @@ class Typeit {
     })
   }
 
+  isFrugalAvailable(a) {
+    return new RegExp(`^(${this.element.textContent}).*`).test(a)
+  }
+
   sortWords() {
     return this.words.sort((a, b) => {
-      b = b.toLowerCase()
       a = a.toLowerCase()
+      b = b.toLowerCase()
       return a === b ? 0 : a < b ? -1 : 1
     })
   }

@@ -69,13 +69,13 @@ describe('[ Promises ]', () => {
   })
 
   it('[Clear] Word - both leaveLast and isLastWord are true', () => {
-    component.leaveLast = true
+    component.leaveLast  = true
     component.isLastWord = true
     return component.clear('Sample').then(data => expect(data).toEqual('Sample'))
   })
 
   it('[Clear] Word - both leaveLast and isLastWord are false', () => {
-    component.leaveLast = false
+    component.leaveLast  = false
     component.isLastWord = false
     return component.clear('Sample').then(data => expect(data).toEqual(''))
   })

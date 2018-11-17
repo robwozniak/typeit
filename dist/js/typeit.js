@@ -4,8 +4,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DEFAULT_SPEED = 95;
 var DEFAULT_DELAY = 650;
+var DEFAULT_SPEED = 95;
 var DEFAULT_TYPEIT_CLASS = 'typeit';
 
 var Typeit = function () {
@@ -14,22 +14,27 @@ var Typeit = function () {
 
     if (!config || !config.words) return;
 
-    this.element = selector instanceof Element ? selector : document.querySelector(selector);
-    this.initWord = this.element.textContent;
-    this.words = this.initWord ? [this.initWord].concat(config.words) : config.words;
-    this.speed = config.speed || DEFAULT_SPEED;
-    this.delay = config.delay || DEFAULT_DELAY;
-    this.letterTag = config.letterTag || false;
-    this.letterClass = config.letterClass || false;
     this.backwards = config.backwards || false;
+    this.delay = config.delay || DEFAULT_DELAY;
+    this.element = selector instanceof Element ? selector : document.querySelector(selector);
+    this.events = { onType: false, onClear: false, onComplete: false };
+    this.frugal = config.frugal || false;
+    this.initWord = this.element.textContent;
     this.leaveLast = config.leaveLast || false;
     this.isInfinity = config.infinity && !config.leaveLast || false;
-    this.onType = config.onType || false;
+    this.letterClass = config.letterClass || false;
+    this.letterTag = config.letterTag || false;
     this.onClear = config.onClear || false;
     this.onComplete = config.onComplete || false;
-    this.events = { onType: false, onClear: false, onComplete: false };
+    this.onType = config.onType || false;
+    this.sort = config.sort || false;
+    this.speed = config.speed || DEFAULT_SPEED;
+    this.words = (this.initWord ? [this.initWord].concat(config.words) : config.words).map(function (elem) {
+      return Array.isArray(elem) ? elem.join(' ') : elem;
+    });
 
     this.element.classList.add(DEFAULT_TYPEIT_CLASS);
+    if (this.sort) this.words = this.sortWords();
 
     this.initBaseEvents();
     this.initTypeLoop();
@@ -45,14 +50,12 @@ var Typeit = function () {
       var _this = this;
 
       var _loop = function _loop(eventName) {
-        if (_this.events.hasOwnProperty(eventName)) {
-          _this.events[eventName] = new Event(eventName);
-          _this.element.addEventListener(eventName, function (event) {
-            if (_this[eventName] instanceof Function) {
-              _this[eventName].call(event, event, event.detail);
-            }
-          });
-        }
+        _this.events[eventName] = new Event(eventName);
+        _this.element.addEventListener(eventName, function (event) {
+          if (_this[eventName] instanceof Function) {
+            _this[eventName].call(event, event, event.detail);
+          }
+        });
       };
 
       for (var eventName in this.events) {
@@ -63,9 +66,7 @@ var Typeit = function () {
     key: 'updateBaseEventsDetailData',
     value: function updateBaseEventsDetailData(word) {
       for (var eventName in this.events) {
-        if (this.events.hasOwnProperty(eventName)) {
-          this.events[eventName]['detail'] = word;
-        }
+        this.events[eventName]['detail'] = word;
       }
     }
   }, {
@@ -73,15 +74,17 @@ var Typeit = function () {
     value: function initTypeLoop() {
       var _this2 = this;
 
-      var _loop2 = function _loop2(idx, _typePromise) {
+      var _loop2 = function _loop2(idx, _typePromise, _currentWord) {
+        // create shallow copy of current word
+        _currentWord = _this2.words[idx].slice();
         _typePromise = _typePromise.then(function () {
           _this2.isLastWord = _this2.words.length - 1 === idx;
-          _this2.updateBaseEventsDetailData(_this2.words[idx]);
+          _this2.updateBaseEventsDetailData(_currentWord);
 
-          return _this2.type(_this2.words[idx]).then(function () {
+          return _this2.type(_currentWord).then(function () {
             return _this2.wait(_this2.delay);
           }).then(function () {
-            return _this2.clear(_this2.words[idx]);
+            return _this2.clear(_currentWord);
           });
         }).then(function () {
           if (_this2.isInfinity && _this2.isLastWord) {
@@ -91,10 +94,11 @@ var Typeit = function () {
           }
         });
         typePromise = _typePromise;
+        currentWord = _currentWord;
       };
 
-      for (var idx = 0, typePromise = Promise.resolve(); idx < this.words.length; idx++) {
-        _loop2(idx, typePromise);
+      for (var idx = 0, typePromise = Promise.resolve(), currentWord = ''; idx < this.words.length; idx++) {
+        _loop2(idx, typePromise, currentWord);
       }
     }
   }, {
@@ -108,7 +112,9 @@ var Typeit = function () {
       var _this3 = this;
 
       return new Promise(function (resolve) {
-        if (_this3.element.textContent) {
+        if (_this3.frugal && _this3.element.textContent && _this3.isFrugalAvailable(word)) {
+          word = word.replace(_this3.element.textContent, '');
+        } else if (_this3.element.textContent) {
           resolve(word);
           return;
         }
@@ -149,18 +155,38 @@ var Typeit = function () {
           return;
         }
 
+        var currentWordIndex = _this4.words.indexOf(word);
+
         _this4.element.dispatchEvent(_this4.events.onClear);
 
-        var typeLoop = setInterval(function () {
+        var clearLoop = setInterval(function () {
           if (_this4.backwards && _this4.element.textContent) {
             _this4.element.removeChild(_this4.element.lastChild);
+            if (_this4.frugal && _this4.isFrugalAvailable(_this4.isLastWord && _this4.isInfinity ? _this4.words[0] : _this4.words[currentWordIndex + 1])) {
+              resolve(word);
+              clearInterval(clearLoop);
+            }
           } else {
             _this4.element.textContent = '';
-            clearInterval(typeLoop);
+            clearInterval(clearLoop);
             resolve(_this4.element.textContent);
             return;
           }
         }, _this4.speed);
+      });
+    }
+  }, {
+    key: 'isFrugalAvailable',
+    value: function isFrugalAvailable(a) {
+      return new RegExp('^(' + this.element.textContent + ').*').test(a);
+    }
+  }, {
+    key: 'sortWords',
+    value: function sortWords() {
+      return this.words.sort(function (a, b) {
+        a = a.toLowerCase();
+        b = b.toLowerCase();
+        return a === b ? 0 : a < b ? -1 : 1;
       });
     }
   }]);
