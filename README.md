@@ -2,7 +2,7 @@
 Simple JavaScript Typing Animation Plugin
 
 ## Setup development environment with docker
-Usage purposes: You don't  (or you do not want to) have node and gulp installed globally on your machine.
+Usage purposes: You don't (or you do not want to) have node installed globally on your machine.
 
 Required:
 - [docker](https://docs.docker.com/install/)
@@ -25,7 +25,7 @@ Init example:
 
 <script src="./path/to/typeit.js"></script>
 <script>
-new Typeit('#typeit', {
+new CCS.TypeIt('#typeit', {
   words: [
     'Sample text',
     ['This', 'is', 'also', 'allowed']
@@ -47,6 +47,7 @@ new Typeit('#typeit', {
 - `letterTag` - specify each letter html tag, by default `false` - pure text
 - `letterClass` - specify each letter wrapper class, by default `false` - no class. **Note**: Works only when a `letterTag` is also specified
 - `backwards` - removes letters one by one, by default `false` - removes the whole word
+- `frugal` - find a common part during (backwards) clearing letters and start typing the new word from the queue if both words begin with exact same sentences. By default `false`. **Note**: Works only if `backwards` mode is enabled - set to `true`
 - `leaveLast` - leave the last word visible after finishing the whole typing loop, by default `false`
 - `infinity` - enable infinity type loop, by default `false`. **Note**: Option will be disabled automatically when both `infinity` and `leaveLast` options are selected
 - `onType`/`onClear`/`onComplete` - functions which are triggered during plugin lifecycle. Accepts callback function with two parameters (`event` and `word`) as a value, by default `false`

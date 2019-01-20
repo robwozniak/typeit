@@ -2,7 +2,7 @@ const DEFAULT_DELAY        = 650
 const DEFAULT_SPEED        = 95
 const DEFAULT_TYPEIT_CLASS = 'typeit'
 
-class Typeit {
+export class TypeIt {
   constructor(selector, config) {
     if (!config || !config.words) return
 
@@ -172,11 +172,4 @@ class Typeit {
       return a === b ? 0 : a < b ? -1 : 1
     })
   }
-}
-
-try {
-  module.exports = Typeit
-}
-catch (error) {
-  console.warn(error)
 }

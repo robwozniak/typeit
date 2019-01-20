@@ -1,32 +1,21 @@
 {
   "name": "typeit",
-  "version": "0.0.1",
+  "version": "1.2.0",
   "description": "Simple JavaScript Typing Animation Plugin",
   "main": "index.js",
   "scripts": {
+    "build": "./node_modules/webpack/bin/webpack.js",
+    "dev": "./node_modules/webpack/bin/webpack.js --watch",
     "test": "jest"
   },
-  "author": "Robert Wozniak",
+  "author": "Robert Wozniak <cookiecodestudio@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "autoprefixer": "^9.0.2",
-    "babel-core": "^6.26.3",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^7.0.1",
-    "gulp-eslint": "^5.0.0",
-    "gulp-if": "^2.0.2",
-    "gulp-logger": "0.0.2",
-    "gulp-notify": "^3.2.0",
-    "gulp-plumber": "^1.2.0",
-    "gulp-postcss": "^7.0.1",
-    "gulp-rename": "^1.4.0",
-    "gulp-sass": "^4.0.1",
-    "gulp-sass-error": "^1.0.5",
-    "gulp-uglify": "^3.0.1",
-    "gulp-util": "^3.0.8",
-    "jest": "^23.5.0"
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "babel-loader": "^8.0.5",
+    "jest": "^23.5.0",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1"
   }
 }
