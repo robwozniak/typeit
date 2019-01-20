@@ -7,10 +7,9 @@ if [ -f "./package.json" ]; then
     yarn install
 fi
 
-if [ -d "./node_modules/gulp/bin" ]; then
+if [ -d "./node_modules/webpack/bin" ]; then
     echo "========================================="
-    echo "Run gulp"
+    echo "Run webpack"
     echo "========================================="
-    ./node_modules/gulp/bin/gulp.js
+    yarn dev
 fi
-

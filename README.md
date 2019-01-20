@@ -2,7 +2,7 @@
 Simple JavaScript Typing Animation Plugin
 
 ## Setup development environment with docker
-Usage purposes: You don't  (or you do not want to) have node and gulp installed globally on your machine.
+Usage purposes: You don't (or you do not want to) have node installed globally on your machine.
 
 Required:
 - [docker](https://docs.docker.com/install/)
@@ -25,7 +25,7 @@ Init example:
 
 <script src="./path/to/typeit.js"></script>
 <script>
-new Typeit('#typeit', {
+new CCS.Typeit('#typeit', {
   words: [
     'Sample text',
     ['This', 'is', 'also', 'allowed']
