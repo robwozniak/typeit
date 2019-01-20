@@ -25,7 +25,7 @@ Init example:
 
 <script src="./path/to/typeit.js"></script>
 <script>
-new CCS.Typeit('#typeit', {
+new CCS.TypeIt('#typeit', {
   words: [
     'Sample text',
     ['This', 'is', 'also', 'allowed']
