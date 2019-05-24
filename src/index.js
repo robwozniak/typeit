@@ -1,31 +1,24 @@
-const DEFAULT_DELAY        = 650
-const DEFAULT_SPEED        = 95
-const DEFAULT_TYPEIT_CLASS = 'typeit'
-
 export class TypeIt {
   constructor(selector, config) {
     if (!config || !config.words) return
 
     this.backwards   = config.backwards || false
-    this.delay       = config.delay || DEFAULT_DELAY
+    this.delay       = isNaN(config.delay) ? 650 : Number(config.delay)
     this.element     = selector instanceof Element ? selector : document.querySelector(selector)
     this.events      = { onType: false, onClear: false, onComplete: false }
     this.frugal      = config.frugal || false
     this.initWord    = this.element.textContent
-    this.leaveLast   = config.leaveLast || false
     this.isInfinity  = config.infinity && !config.leaveLast || false
+    this.leaveLast   = config.leaveLast || false
     this.letterClass = config.letterClass || false
     this.letterTag   = config.letterTag || false
     this.onClear     = config.onClear || false
     this.onComplete  = config.onComplete || false
     this.onType      = config.onType || false
-    this.sort        = config.sort || false
-    this.speed       = config.speed || DEFAULT_SPEED
-    this.words       = (this.initWord ? [this.initWord].concat(config.words) : config.words)
-      .map(elem => Array.isArray(elem) ? elem.join(' ') : elem)
-
-    this.element.classList.add(DEFAULT_TYPEIT_CLASS)
-    if (this.sort) this.words = this.sortWords()
+    this.speed       = isNaN(config.speed) ? 95 : Number(config.speed)
+    this.words       = (this.initWord ? [this.initWord].concat(config.words) : config.words).map(
+      elem => Array.isArray(elem) ? elem.join(' ') : elem
+    )
 
     this.initBaseEvents()
     this.initTypeLoop()
