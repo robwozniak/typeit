@@ -157,12 +157,4 @@ export class TypeIt {
   isFrugalAvailable(a) {
     return new RegExp(`^(${this.element.textContent}).*`).test(a)
   }
-
-  sortWords() {
-    return this.words.sort((a, b) => {
-      a = a.toLowerCase()
-      b = b.toLowerCase()
-      return a === b ? 0 : a < b ? -1 : 1
-    })
-  }
 }
