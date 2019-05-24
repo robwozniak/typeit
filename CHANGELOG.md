@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.3.0] - 2019-05-24
+### Added
+- `eslint` package to project
+
+### Changed
+- Move default typeit config values directly inside constructor
+- Remove sort function from core and tests
+
+### Fixed
+- Tests plugin initialization because of module type changes
+
+### Removed
+- gulpfile.js file from project
+
 ## [1.2.0] - 2019-01-20
 ### Added
 - `webpack` with simple config file

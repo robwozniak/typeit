@@ -1,4 +1,4 @@
-const typeit  = require('./js/typeit')
+const typeit  = require('./dist/typeit')
 const element = document.createElement('DIV')
 
 element.setAttribute('id', 'sample');
@@ -7,7 +7,7 @@ describe('[ Functions ]', () => {
   let component
 
   beforeEach(function () {
-    component = new typeit(element, {
+    component = new typeit.TypeIt(element, {
       words: [
         'Sample text',
         'alpha',
@@ -32,23 +32,13 @@ describe('[ Functions ]', () => {
     component.letterClass = 'test'
     expect(component.prepareLetter('A')).toEqual(`<span class="test">A</span>`)
   })
-
-  test('[sortWords] Sort with alphabetical order', () => {
-    expect(component.sortWords()).toEqual([
-      'alpha',
-      'Charlie',
-      'Sample text',
-      'whiskey',
-      'yankee'
-    ])
-  })
 })
 
 describe('[ Promises ]', () => {
   let component
 
   beforeEach(function () {
-    component = new typeit(element, {
+    component = new typeit.TypeIt(element, {
       words: [
         'Sample text',
         'Sample code'
