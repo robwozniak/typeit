@@ -6,6 +6,7 @@
   "scripts": {
     "build": "./node_modules/webpack/bin/webpack.js",
     "dev": "./node_modules/webpack/bin/webpack.js --watch",
+    "lint": "eslint --ext .js src",
     "test": "jest"
   },
   "author": "Robert Wozniak <cookiecodestudio@gmail.com>",
@@ -14,6 +15,7 @@
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "babel-loader": "^8.0.5",
+    "eslint": "^5.15.2",
     "jest": "^23.5.0",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1"
